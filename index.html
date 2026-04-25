@@ -3,74 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner IA Pro 2026 - Master</title>
+    <title>Scanner IA Master | Diagnóstico OBD2 Profissional</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; }
         * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: var(--bg); margin: 0; padding: 20px; color: var(--text); }
-        .container { max-width: 900px; margin: 0 auto; background: var(--card); border-radius: 24px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        body { background: var(--bg); margin: 0; padding: 15px; color: var(--text); }
+        .container { max-width: 900px; margin: 0 auto; background: var(--card); border-radius: 28px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #334155; }
         
-        header { text-align: center; margin-bottom: 30px; }
-        h1 { color: var(--primary); margin: 0; font-weight: 800; letter-spacing: -1px; }
-        .version { font-size: 0.8rem; opacity: 0.6; }
-
-        /* Seletor de Tipo Veículo */
-        .vehicle-type { display: flex; gap: 15px; margin-bottom: 25px; justify-content: center; }
-        .type-btn { flex: 1; padding: 15px; border-radius: 16px; border: 2px solid #334155; background: #1e293b; color: #94a3b8; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: bold; }
-        .type-btn.active { border-color: var(--primary); background: rgba(14, 165, 233, 0.1); color: var(--primary); }
-        .type-btn i { font-size: 1.5rem; }
-
-        .form-group { background: #334155; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #94a3b8; font-size: 0.85rem; }
-        select, input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; margin-bottom: 15px; outline: none; }
+        header { text-align: center; margin-bottom: 25px; }
+        h1 { color: var(--primary); margin: 0; font-weight: 800; font-size: 1.8rem; }
         
-        button.main-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1.1rem; }
+        /* Configuração de Chave Segura */
+        #keySetup { background: rgba(234, 179, 8, 0.1); border: 1px dashed #eab308; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; }
+        #keySetup input { width: 80%; margin: 10px 0; padding: 10px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; }
+
+        .vehicle-type { display: flex; gap: 12px; margin-bottom: 20px; }
+        .type-btn { flex: 1; padding: 15px; border-radius: 20px; border: 2px solid #334155; background: #1e293b; color: #94a3b8; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: bold; }
+        .type-btn i { font-size: 1.6rem; }
+        .type-btn.active { border-color: var(--primary); background: rgba(14, 165, 233, 0.15); color: var(--primary); }
+
+        .form-group { background: #334155; padding: 20px; border-radius: 24px; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #94a3b8; font-size: 0.85rem; }
+        select, input { width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; margin-bottom: 15px; outline: none; }
+        
+        button.main-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1.1rem; }
         button.main-btn:hover { background: var(--accent); transform: translateY(-2px); }
 
-        /* Resultado */
-        #resultArea { margin-top: 30px; padding: 30px; border-radius: 16px; background: #ffffff; color: #1e293b; display: none; position: relative; }
-        .action-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-action { flex: 1; padding: 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
-        .btn-copy { background: #e2e8f0; color: #475569; }
-        .btn-pdf { background: #ef4444; color: white; }
-        .btn-action:hover { opacity: 0.9; }
-
-        /* Loader */
-        .loader-container { display: none; text-align: center; margin: 25px 0; }
-        .spinner { width: 45px; height: 45px; border: 4px solid #334155; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        .loader-container { display: none; text-align: center; margin: 20px 0; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #334155; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Chat */
-        .chat-section { margin-top: 30px; border-top: 1px solid #334155; padding-top: 20px; display: none; }
-        .chat-history { background: #0f172a; border-radius: 12px; padding: 15px; max-height: 250px; overflow-y: auto; margin-bottom: 15px; border: 1px solid #334155; }
-        .msg { margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 8px; }
+        /* Área de Resultado */
+        #resultArea { margin-top: 25px; padding: 25px; border-radius: 20px; background: #ffffff; color: #1e293b; display: none; }
+        #output { line-height: 1.6; }
 
-        footer { text-align: center; margin-top: 40px; color: #64748b; font-size: 0.75rem; }
+        .action-buttons { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .btn-action { flex: 1; min-width: 150px; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn-copy { background: #e2e8f0; color: #475569; }
+        .btn-pdf { background: #ef4444; color: white; }
+        .btn-wa { background: #25D366; color: white; }
+
+        /* Chat */
+        .chat-section { margin-top: 25px; border-top: 1px solid #334155; padding-top: 20px; display: none; }
+        .chat-history { background: #0f172a; border-radius: 15px; padding: 15px; max-height: 250px; overflow-y: auto; margin-bottom: 15px; border: 1px solid #334155; }
+        .msg { margin-bottom: 10px; font-size: 0.9rem; padding-bottom: 5px; border-bottom: 1px solid #1e293b; }
+        .msg-user { color: var(--primary); font-weight: bold; }
+        .msg-ia { color: #cbd5e1; }
+
+        footer { text-align: center; margin-top: 30px; color: #64748b; font-size: 0.75rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div id="keySetup" style="display:none">
+        <i class="fas fa-key" style="color:#eab308"></i>
+        <p style="margin:5px 0; font-size:0.9rem; color:#eab308">Configure sua API Key para começar</p>
+        <input type="password" id="userKeyInput" placeholder="Cole sua chave aqui...">
+        <button onclick="saveKey()" style="background:#eab308; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold">Salvar Chave</button>
+    </div>
+
     <header>
-        <h1>🔧 Scanner IA Master</h1>
-        <div class="version">Diagnóstico Avançado Carros & Caminhões v2.6</div>
+        <h1><i class="fas fa-robot"></i> Scanner IA Master</h1>
+        <div class="version">Diagnóstico Inteligente v2.7 (2026)</div>
     </header>
     
     <div class="vehicle-type">
         <div class="type-btn active" id="btnCarro" onclick="setVehicleType('carros')">
-            <span>🚗</span>
-            Carros / Leves
+            <i class="fas fa-car"></i> <span>Carros</span>
         </div>
         <div class="type-btn" id="btnCaminhao" onclick="setVehicleType('caminhoes')">
-            <span>🚚</span>
-            Caminhões / Pesados
+            <i class="fas fa-truck"></i> <span>Caminhões</span>
         </div>
     </div>
 
     <div class="form-group">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div>
                 <label>Fabricante:</label>
                 <select id="brand"><option value="">Carregando...</option></select>
@@ -82,159 +93,182 @@
         </div>
 
         <label>Código de Falha (DTC):</label>
-        <input type="text" id="dtc" placeholder="Ex: P0420 ou J1939 codes">
+        <input type="text" id="dtc" placeholder="Ex: P0420">
         
-        <button class="main-btn" id="btnRun">GERAR LAUDO TÉCNICO</button>
+        <button class="main-btn" id="btnRun"><i class="fas fa-search"></i> ANALISAR AGORA</button>
     </div>
 
     <div id="loader" class="loader-container">
         <div class="spinner"></div>
-        <div style="color: var(--primary); font-weight: bold;">IA analisando esquemas técnicos...</div>
+        <div id="statusText">IA processando diagnóstico...</div>
     </div>
 
     <div id="resultArea">
         <div id="reportContent">
             <div id="output"></div>
         </div>
-        
         <div class="action-buttons">
-            <button class="btn-action btn-copy" onclick="copyResult()">📋 Copiar Texto</button>
-            <button class="btn-action btn-pdf" onclick="generatePDF()">📄 Gerar PDF Profissional</button>
+            <button class="btn-action btn-copy" onclick="copyResult()"><i class="fas fa-copy"></i> Copiar</button>
+            <button class="btn-action btn-pdf" onclick="generatePDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+            <button class="btn-action btn-wa" onclick="shareWA()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
         </div>
     </div>
 
     <div id="chatSection" class="chat-section">
-        <label>💬 Consultar Especialista sobre este caso:</label>
+        <label><i class="fas fa-comments"></i> Chat com Especialista:</label>
         <div id="chatHistory" class="chat-history"></div>
         <div style="display: flex; gap: 10px;">
-            <input type="text" id="chatInput" placeholder="Sua dúvida..." style="margin:0">
-            <button id="btnChat" style="width: 100px; margin:0; background: var(--primary); border:none; border-radius:10px; color:white; cursor:pointer;">Enviar</button>
+            <input type="text" id="chatInput" placeholder="Tire sua dúvida..." style="margin:0">
+            <button id="btnChat" style="width:80px; margin:0; background:var(--primary); border:none; border-radius:12px; color:white; cursor:pointer"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 
     <footer>
-        Base de dados FIPE Parallelum & Google Gemini 2.5 Flash | 2026
+        <button onclick="clearKey()" style="background:none; border:none; color:#64748b; cursor:pointer; text-decoration:underline">Trocar API Key</button><br><br>
+        FIPE Parallelum + Gemini 2.5 Flash
     </footer>
 </div>
 
 <script>
-    const MINHA_CHAVE = "AIzaSyDifEiasbUP7YVigrigpHPul5F3jVJWV7I";
+    let MINHA_CHAVE = localStorage.getItem('gemini_api_key');
     let currentType = 'carros';
     let historico = [];
+    let ultimoMarkdown = "";
 
-    const brandSel = document.getElementById('brand');
-    const modelSel = document.getElementById('model');
+    // Lógica da Chave Segura
+    function checkKey() {
+        if(!MINHA_CHAVE) {
+            document.getElementById('keySetup').style.display = 'block';
+        } else {
+            document.getElementById('keySetup').style.display = 'none';
+            loadBrands();
+        }
+    }
 
-    // Troca entre Carro e Caminhão
+    function saveKey() {
+        const val = document.getElementById('userKeyInput').value.trim();
+        if(val) {
+            localStorage.setItem('gemini_api_key', val);
+            MINHA_CHAVE = val;
+            checkKey();
+        }
+    }
+
+    function clearKey() {
+        localStorage.removeItem('gemini_api_key');
+        location.reload();
+    }
+
+    // FIPE
+    async function loadBrands() {
+        const bSel = document.getElementById('brand');
+        bSel.innerHTML = '<option>Carregando...</option>';
+        try {
+            const res = await fetch(`https://parallelum.com.br/fipe/api/v1/${currentType}/marcas`);
+            const data = await res.json();
+            bSel.innerHTML = '<option value="">Selecione a Marca</option>';
+            data.forEach(m => bSel.innerHTML += `<option value="${m.codigo}">${m.nome}</option>`);
+        } catch(e) { bSel.innerHTML = '<option>Erro FIPE</option>'; }
+    }
+
+    document.getElementById('brand').onchange = async (e) => {
+        const mSel = document.getElementById('model');
+        if(!e.target.value) return;
+        mSel.disabled = true;
+        mSel.innerHTML = '<option>Buscando...</option>';
+        const res = await fetch(`https://parallelum.com.br/fipe/api/v1/${currentType}/marcas/${e.target.value}/modelos`);
+        const data = await res.json();
+        mSel.innerHTML = '<option value="">Selecione o Modelo</option>';
+        data.modelos.forEach(m => mSel.innerHTML += `<option value="${m.nome}">${m.nome}</option>`);
+        mSel.disabled = false;
+    };
+
     function setVehicleType(type) {
         currentType = type;
         document.getElementById('btnCarro').classList.toggle('active', type === 'carros');
         document.getElementById('btnCaminhao').classList.toggle('active', type === 'caminhoes');
         loadBrands();
+        document.getElementById('resultArea').style.display = 'none';
     }
 
-    // Carrega Marcas da FIPE dinamicamente
-    async function loadBrands() {
-        brandSel.innerHTML = '<option>Carregando...</option>';
-        modelSel.disabled = true;
-        try {
-            const res = await fetch(`https://parallelum.com.br/fipe/api/v1/${currentType}/marcas`);
-            const data = await res.json();
-            brandSel.innerHTML = '<option value="">Selecione a Marca</option>';
-            data.forEach(m => brandSel.innerHTML += `<option value="${m.codigo}">${m.nome}</option>`);
-        } catch (e) { console.error("Erro FIPE Marcas"); }
-    }
-
-    brandSel.onchange = async () => {
-        if(!brandSel.value) return;
-        modelSel.disabled = true;
-        modelSel.innerHTML = '<option>Buscando modelos...</option>';
-        const res = await fetch(`https://parallelum.com.br/fipe/api/v1/${currentType}/marcas/${brandSel.value}/modelos`);
-        const data = await res.json();
-        modelSel.innerHTML = '<option value="">Selecione o Modelo</option>';
-        data.modelos.forEach(m => modelSel.innerHTML += `<option value="${m.nome}">${m.nome}</option>`);
-        modelSel.disabled = false;
-    };
-
-    // Chamada IA
-    async function callAI(messages) {
+    // Gemini
+    async function callAI(msgs) {
         const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${MINHA_CHAVE}`;
         const res = await fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ contents: messages })
+            body: JSON.stringify({ contents: msgs })
         });
         const data = await res.json();
+        if(!res.ok) throw new Error(data.error?.message || "Erro na API");
         return data.candidates[0].content.parts[0].text;
     }
 
     document.getElementById('btnRun').onclick = async () => {
-        const bName = brandSel.options[brandSel.selectedIndex].text;
-        const mName = modelSel.value;
+        const brand = document.getElementById('brand').options[document.getElementById('brand').selectedIndex].text;
+        const model = document.getElementById('model').value;
         const dtc = document.getElementById('dtc').value.toUpperCase();
 
-        if(!mName || !dtc) { alert("Preencha marca, modelo e código."); return; }
+        if(!model || !dtc) return alert("Preencha tudo!");
 
         document.getElementById('loader').style.display = 'block';
-        document.getElementById('btnRun').disabled = true;
         document.getElementById('resultArea').style.display = 'none';
-
-        const prompt = `Você é um engenheiro mecânico especialista em diagnósticos ${currentType === 'carros' ? 'automotivos leves' : 'de veículos pesados e diesel'}. 
-        Veículo: ${bName} ${mName}. Código DTC: ${dtc}.
-        Forneça um laudo técnico completo e organizado em Português com: Significado, Sintomas, Causas Prováveis e Procedimentos de Teste/Reparo.`;
+        
+        const prompt = `Aja como Mecânico Master. Veículo: ${brand} ${model}. Código DTC: ${dtc}. Forneça significado, sintomas, causas e como consertar em Português (Markdown).`;
 
         try {
             historico = [{ role: "user", parts: [{ text: prompt }] }];
             const resp = await callAI(historico);
+            ultimoMarkdown = resp;
             historico.push({ role: "model", parts: [{ text: resp }] });
             
             document.getElementById('output').innerHTML = marked.parse(resp);
             document.getElementById('resultArea').style.display = 'block';
             document.getElementById('chatSection').style.display = 'block';
-        } catch (e) { alert("Erro na IA: " + e.message); }
-        finally {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('btnRun').disabled = false;
-        }
+        } catch (e) { alert("Erro: " + e.message); }
+        finally { document.getElementById('loader').style.display = 'none'; }
     };
 
-    // Chat de dúvidas
+    // Chat
     document.getElementById('btnChat').onclick = async () => {
-        const input = document.getElementById('chatInput');
-        if(!input.value) return;
-        const txt = input.value;
-        document.getElementById('chatHistory').innerHTML += `<div class="msg"><b style="color:var(--primary)">Você:</b> ${txt}</div>`;
-        input.value = "";
-
+        const inp = document.getElementById('chatInput');
+        if(!inp.value) return;
+        const q = inp.value;
+        document.getElementById('chatHistory').innerHTML += `<div class="msg"><span class="msg-user">Você:</span> ${q}</div>`;
+        inp.value = "";
         try {
-            historico.push({ role: "user", parts: [{ text: txt }] });
-            const resp = await callAI(historico);
-            historico.push({ role: "model", parts: [{ text: resp }] });
-            document.getElementById('chatHistory').innerHTML += `<div class="msg"><b>IA:</b> ${marked.parse(resp)}</div>`;
+            historico.push({ role: "user", parts: [{ text: q }] });
+            const r = await callAI(historico);
+            historico.push({ role: "model", parts: [{ text: r }] });
+            document.getElementById('chatHistory').innerHTML += `<div class="msg"><span class="msg-ia">IA:</span> ${marked.parse(r)}</div>`;
             document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
-        } catch (e) { console.error(e); }
+        } catch(e) { console.error(e); }
     };
 
-    // Funcionalidades Extras
+    // Ações
     function copyResult() {
-        const text = document.getElementById('output').innerText;
-        navigator.clipboard.writeText(text);
-        alert("Texto copiado para a área de transferência!");
+        navigator.clipboard.writeText(document.getElementById('output').innerText);
+        alert("Copiado!");
     }
 
     function generatePDF() {
         const element = document.getElementById('reportContent');
-        const opt = {
+        html2pdf().from(element).set({
             margin: 10,
-            filename: `Laudo_Tecnico_${document.getElementById('dtc').value}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
+            filename: 'Laudo_Tecnico.pdf',
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
+        }).save();
     }
 
-    loadBrands();
+    function shareWA() {
+        const brand = document.getElementById('brand').options[document.getElementById('brand').selectedIndex].text;
+        const dtc = document.getElementById('dtc').value;
+        const text = `🔧 *LAUDO TÉCNICO IA*\n🚗 Veículo: ${brand}\n⚠️ Código: ${dtc}\n\n${document.getElementById('output').innerText.substring(0, 500)}...`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+    }
+
+    checkKey();
 </script>
 </body>
 </html>
